@@ -1,0 +1,9 @@
+.kiro/
+.claude/
+.agents/
+openspec/
+.opencode/
+*.epub
+.playwright-mcp/
+skills-lock.json
+*.DS_Store

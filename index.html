@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline EPUB Watermark Remove — No Upload, 100% In-Browser</title>
+  <meta name="description" content="An offline EPUB watermark remove tool for books you own: clean watermarks entirely in your browser — no upload, no server, no account. Review matches, approve removals, download a fixed EPUB.">
+  <meta name="keywords" content="offline epub watermark remove, epub watermark remover, remove watermark from epub, epub cleaner, epub watermark removal offline">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#1f6feb">
+  <link rel="canonical" href="https://rebotak.github.io/offline-epub-watermark-remove/">
+
+  <!-- Open Graph / social -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Offline EPUB Watermark Remove">
+  <meta property="og:title" content="Offline EPUB Watermark Remove — Clean Your Own EPUBs in the Browser">
+  <meta property="og:description" content="No upload, no server. Review every watermark match, approve exactly what to remove, and download a validated clean EPUB —100% offline. For books you own.">
+  <meta property="og:url" content="https://rebotak.github.io/offline-epub-watermark-remove/">
+  <meta property="og:image" content="https://rebotak.github.io/offline-epub-watermark-remove/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Offline EPUB Watermark Remove — 100% offline, runs in your browser">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Offline EPUB Watermark Remove — Clean Your Own EPUBs">
+  <meta name="twitter:description" content="Remove watermarks from EPUBs entirely in your browser. No uploads, no server — review, approve, download.">
+  <meta name="twitter:image" content="https://rebotak.github.io/offline-epub-watermark-remove/assets/og-image.png">
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Offline EPUB Watermark Remove",
+    "description": "Remove a watermark string from an EPUB entirely in the browser — no upload, no server. Review each match as an HTML block, approve exactly which removals to apply, and download a validated clean EPUB. For books you own.",
+    "url": "https://rebotak.github.io/offline-epub-watermark-remove/",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any (runs in a web browser)",
+    "browserRequirements": "Requires JavaScript",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "inLanguage": "en"
+  }
+  </script>
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>📘</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <h1>Offline EPUB Watermark Remove</h1>
+    <p class="subtitle">Remove a watermark string from an EPUB — entirely offline, nothing is uploaded.</p>
+    <p class="intro">This <strong>offline EPUB watermark remove</strong> tool runs 100% in your own browser:
+      your file never leaves your device, there is no server, no account, and no upload. It is made for
+      books you own — cleaning purchase stamps and download-site footers that interfere with personal use,
+      device layout, accessibility tools, or text-to-speech narration. It does not support piracy.</p>
+    <ol class="how-it-works">
+      <li><strong>Upload</strong> your <code>.epub</code> and enter the exact watermark text.</li>
+      <li><strong>Scan</strong> every chapter for the string, even across inline tags.</li>
+      <li><strong>Review &amp; approve</strong> each HTML block — you choose the scope, nothing is edited silently.</li>
+      <li><strong>Download</strong> a validated <code>fixed_book.epub</code> with all other content byte-identical.</li>
+    </ol>
+
+    <div id="error-banner" class="error-banner hidden" role="alert"></div>
+
+    <!-- Stage 1: Input -->
+    <section id="stage-input" class="stage">
+      <h2>1. Input</h2>
+      <div class="field">
+        <label for="epub-file">EPUB file</label>
+        <input type="file" id="epub-file" accept=".epub,application/epub+zip">
+      </div>
+      <div class="field">
+        <label for="watermark-input">Watermark text</label>
+        <input type="text" id="watermark-input" placeholder="e.g. Licensed to Alice Example" autocomplete="off">
+        <p class="hint">The exact text to find. In the next step you'll review and choose which HTML blocks to remove.</p>
+      </div>
+      <div class="field">
+        <button id="scan-btn" class="primary">Scan</button>
+        <span id="input-error" class="inline-error" role="alert"></span>
+      </div>
+      <p id="file-info" class="file-info hidden"></p>
+    </section>
+
+    <!-- Stage 2: Review (populated by app.js) -->
+    <section id="stage-review" class="stage hidden">
+      <h2>2. Review matches</h2>
+      <div id="scan-summary"></div>
+      <div id="review-list"></div>
+      <div class="actions">
+        <button id="apply-btn" class="primary">Remove selected blocks</button>
+        <span id="selection-error" class="inline-error" role="alert"></span>
+        <button id="rescan-btn">Back to input</button>
+      </div>
+    </section>
+
+    <!-- Stage 3: Process (populated by app.js) -->
+    <section id="stage-process" class="stage hidden">
+      <h2>3. Process</h2>
+      <div id="progress"></div>
+      <div id="validation-status"></div>
+      <div class="actions">
+        <button id="download-btn" class="primary hidden">Download fixed_book.epub</button>
+        <button id="restart-btn" class="hidden">Start over</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>Use it on books you own.</strong> This offline EPUB watermark remover does not support or condone
+      piracy; removing watermarks from content you do not own is against copyright law.</p>
+    <p class="muted">Runs entirely on your device · No upload · No account · <a href="https://github.com/rebotak/offline-epub-watermark-remove">Source on GitHub</a></p>
+    <p class="muted">MIT licensed · Provided "as is", no warranty · <a href="https://github.com/rebotak/offline-epub-watermark-remove/blob/master/LICENSE">License</a> · <a href="https://github.com/rebotak/offline-epub-watermark-remove/blob/master/NOTICE.md">No endorsement</a></p>
+  </footer>
+
+  <script src="vendor/jszip.min.js"></script>
+  <script src="src/epub-reader.js"></script>
+  <script src="src/matcher.js"></script>
+  <script src="src/editor.js"></script>
+  <script src="src/epub-writer.js"></script>
+  <script src="src/validator.js"></script>
+  <script src="src/app.js"></script>
+</body>
+</html>
